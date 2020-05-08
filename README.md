@@ -18,7 +18,7 @@ Dependencies required
         </dependency>
 ```
 
-###Difference between JUnit4 and JUnit5
+### Difference between JUnit4 and JUnit5
 
 #### Exception expected
 In JUnit4 we write code with @Test to expect an exception in test case. but in JUnit5
@@ -83,7 +83,7 @@ test inputs like
     }
 
     @Test
-    public void shouldReturnFalseWhenFirstTwoAndLastTwoCharactersAreNotSame() {
+    public void string2IsNotNull() {
          assertNotNull("world");
     }
 ```
