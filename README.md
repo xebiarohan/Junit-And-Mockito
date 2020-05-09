@@ -16,6 +16,12 @@ Dependencies required
             <version>5.5.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
 ```
 
 ### Difference between JUnit4 and JUnit5
@@ -128,7 +134,8 @@ public class TodoServiceStub implements TodoService {
 }
 ```
 
-So the problem with Stub is 
+So the problem with Stub is :                                          
+
 Dynamic data : We have to create different stubs each time we need different dynamic data testing
 
 Extra code : There can be more than 1 method in an interface. So to test 1 service method we have to
