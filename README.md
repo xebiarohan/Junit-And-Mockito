@@ -105,7 +105,7 @@ So we can write it as :
 ```
 
 
-### Stubs
+### Stub testing
 Stubs are the dummy implementation of our classes.
  For example we have 2 services
  
@@ -134,6 +134,17 @@ public class TodoServiceStub implements TodoService {
 }
 ```
 
+test case 
+```java
+    @Test
+    public void testRetreiveTodosRelatedToSpring() {
+        TodoService todoServiceStub = new TodoServiceStub();
+        TodoBusinessImpl todoBusiness = new TodoBusinessImpl(todoServiceStub);
+        assertEquals(2, todoBusiness.retreiveTodosRelatedToSpring("Dummy").size());
+        assertTrue(true);
+    }
+```    
+
 So the problem with Stub is :                                          
 
 Dynamic data : We have to create different stubs each time we need different dynamic data testing
@@ -142,3 +153,20 @@ Extra code : There can be more than 1 method in an interface. So to test 1 servi
 implement others also in stub.
 
 
+### Mock testing
+In mock testing, the dependencies are replaced with objects that simulate the behaviour of the real ones.
+
+test case :
+```java
+   @Test
+    public void testRetreiveTodosRelatedToSpring() {
+        TodoService todoService = mock(TodoService.class);
+
+        List<String> strings = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn Junit");
+
+        when(todoService.retrieveTodos("Dummy")).thenReturn(strings);
+
+        TodoBusinessImpl todoBusiness = new TodoBusinessImpl(todoService);
+        assertEquals(2, todoBusiness.retreiveTodosRelatedToSpring("Dummy").size());
+    }
+```    
