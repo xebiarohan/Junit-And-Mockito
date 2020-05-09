@@ -1,4 +1,4 @@
-# JUnit
+# JUnit And Mockito
 
 Latest version of Junit is 5.
 
@@ -97,3 +97,41 @@ So we can write it as :
         assertNotNull(message);
     }
 ```
+
+
+### Stubs
+Stubs are the dummy implementation of our classes.
+ For example we have 2 services
+ 
+ TodoBusinessService
+ TodoService
+ 
+ and we are calling todoService in todoBusinessService. For writting test cases of 
+ todoBusinessService. we can either mock the todoService or can use stub to give a 
+ dummy implementation like :
+ 
+ ```java
+ TodoService
+ 
+ public interface TodoService {
+     public List<String> retrieveTodos(String user);
+ }
+ ```
+and Stub 
+
+```java
+public class TodoServiceStub implements TodoService {
+    @Override
+    public List<String> retrieveTodos(String user) {
+        return Arrays.asList("Learn Spring MVC","Learn Spring","Learn Junit");
+    }
+}
+```
+
+So the problem with Stub is 
+Dynamic data : We have to create different stubs each time we need different dynamic data testing
+
+Extra code : There can be more than 1 method in an interface. So to test 1 service method we have to
+implement others also in stub.
+
+
