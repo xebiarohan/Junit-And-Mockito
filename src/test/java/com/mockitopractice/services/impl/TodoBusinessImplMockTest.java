@@ -1,6 +1,6 @@
-package com.mokitopractice.services.impl;
+package com.mockitopractice.services.impl;
 
-import com.mokitopractice.services.TodoService;
+import com.mockitopractice.services.TodoService;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

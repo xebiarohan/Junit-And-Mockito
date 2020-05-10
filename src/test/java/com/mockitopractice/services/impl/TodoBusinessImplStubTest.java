@@ -1,7 +1,7 @@
-package com.mokitopractice.services.impl;
+package com.mockitopractice.services.impl;
 
 import com.mockitopractice.services.TodoServiceStub;
-import com.mokitopractice.services.TodoService;
+import com.mockitopractice.services.TodoService;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
