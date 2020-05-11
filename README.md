@@ -18,8 +18,8 @@ Dependencies required
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>2.23.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -83,7 +83,23 @@ JUnit5
         });
 
     }
-```    
+```  
+
+#### Mock class annotations
+
+JUnit4
+In JUnit4 we require @RunWith annotation
+example 
+```java
+@RunWith(MockitoJUnitRunner.class)
+```
+
+In JUnit5 we have @@ExtendWith annotation
+example
+```java
+@ExtendWith(MockitoExtension.class)
+```
+
 
 ### Parameterised tests.
 Thes tests are used when we have similar kind of multiple test cases with the only difference of 
@@ -332,3 +348,56 @@ like :
         assertThat(array,arrayContainingInAnyOrder(1,3,2));
     }
 ```
+
+### Mockito Annotation Based Testcases
+In mockito annotation based test cases we mock mocks and inject mocks the classes.
+InjectMock the class for which we are writing test case and Mock the classes which 
+are used in main test class.
+
+example
+```java
+@ExtendWith(MockitoExtension.class)
+public class TodoBusinessImplInjectMockTest {
+
+    @Mock
+    private TodoService todoService;
+
+    @InjectMocks
+    private TodoBusinessImpl todoBusiness;
+
+    @Test
+    public void testRetreiveTodosRelatedToSpring() {
+        List<String> strings = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn Junit");
+        when(todoService.retrieveTodos("Dummy")).thenReturn(strings);
+        assertEquals(2, todoBusiness.retreiveTodosRelatedToSpring("Dummy").size());
+    }
+}
+```
+
+### Spy
+A Spy gets all the logic from the class. So it is upto us to use some part as the
+exact functionality of the class and some part we can mock.
+
+example
+```java
+    @Test
+    public void test() {
+        ArrayList listSpy = spy(ArrayList.class);
+        assertEquals(0,listSpy.size());
+
+        listSpy.add("alpha");
+        assertEquals(1,listSpy.size());
+
+        when(listSpy.size()).thenReturn(5);
+        assertEquals(5,listSpy.size());
+    }
+```
+
+In 3rd line we are adding an element in the list, which is the exact functionality
+of the List class, we are not mocking it.
+
+In 5th line we are mocking the size method of list.
+
+So using Spy we can combine both types.
+
+But its not recommended to use Spy, always try to use Mock. Spy was for the legacy code.
