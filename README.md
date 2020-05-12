@@ -1,6 +1,6 @@
 # JUnit And Mockito
 
-Latest version of Junit is 5.
+Latest version of JUnit is 5.
 
 Dependencies required
 ```java
@@ -22,12 +22,7 @@ Dependencies required
             <version>2.23.0</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
-            <version>2.2</version>
-            <scope>test</scope>
-        </dependency>
+
 ```
 
 ### Difference between JUnit4 and JUnit5
@@ -100,6 +95,43 @@ example
 @ExtendWith(MockitoExtension.class)
 ```
 
+#### Multiple Runners
+In JUnit4 we can have only 1 test runner and for others we have to use rules, In JUnit5 we can have multiple runners.
+
+#### Single Jar
+JUnit4 is a bog single Jar file. even if we want to use a single functionality we have to import whole library.In JUnit5
+we have multiple small libraries which we can import as per our needs.
+
+#### New Java version 
+JUnit4 is features upto Java7 they don't have features of Java8 and newer versions. Where as JUnit5 have all these features like
+lambda functions.
+
+#### Annotation changes :
+Some annotation in JUnit4 is now changed in JUnit5 like :
+1. @Before changed to @BeforeEach
+2. @After changed to @AfterEach
+3. @BeforeClass changed to  @BeforeAll
+4. @AfterClass changed to @AfterAll
+5. @Ignore changed to @Disabled
+
+#### Chaining assertions :
+we can now chain multiple assertions in one test case like :
+
+```java
+@Test
+public void shouldAssertAllTheGroup() {
+    List<Integer> list = Arrays.asList("alpha", "beta", "gamma");
+    Assertions.assertAll("Some assertion message",
+        () -> Assertions.assertEquals(list.get(0), "alpha"),
+        () -> Assertions.assertEquals(list.get(1), "beta"),
+        () -> Assertions.assertEquals(list.get(2), "gamma"));
+}
+```
+
+#### PowerMocks
+The only current issue with JUnit5 is that as per today there is no a concrete support for Power mocks. Where as in JUnit4 Powermocks
+works perfectly.
+
 
 ### Parameterised tests.
 Thes tests are used when we have similar kind of multiple test cases with the only difference of 
@@ -151,7 +183,7 @@ and Stub
 public class TodoServiceStub implements TodoService {
     @Override
     public List<String> retrieveTodos(String user) {
-        return Arrays.asList("Learn Spring MVC","Learn Spring","Learn Junit");
+        return Arrays.asList("Learn Spring MVC","Learn Spring","Learn JUnit");
     }
 }
 ```
@@ -184,7 +216,7 @@ test case :
     public void testRetreiveTodosRelatedToSpring() {
         TodoService todoService = mock(TodoService.class);
 
-        List<String> strings = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn Junit");
+        List<String> strings = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn JUnit");
 
         when(todoService.retrieveTodos("Dummy")).thenReturn(strings);
 
@@ -254,7 +286,7 @@ BDD test case :
     public void testRetreiveTodosRelatedToSpring() {
         //Given
         TodoService todoService = mock(TodoService.class);
-        List<String> strings = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn Junit");
+        List<String> strings = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn JUnit");
         given(todoService.retrieveTodos("Dummy")).willReturn(strings);
         TodoBusinessImpl todoBusiness = new TodoBusinessImpl(todoService);
 
@@ -292,7 +324,7 @@ with which parameter and how many times
         //Given
         TodoService todoService = mock(TodoService.class);
 
-        List<String> strings = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn Junit");
+        List<String> strings = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn JUnit");
 
         given(todoService.retrieveTodos("Dummy")).willReturn(strings);
         TodoBusinessImpl todoBusiness = new TodoBusinessImpl(todoService);
@@ -301,13 +333,13 @@ with which parameter and how many times
         todoBusiness.deleteTodoNotRelatedToSprinng("Dummy");
 
         // Just wanter to test is it calling or not
-        verify(todoService).deleteTodo("Learn Junit");
+        verify(todoService).deleteTodo("Learn JUnit");
 
         // exactly wanted to test how many times it is calling
-        verify(todoService, times(1)).deleteTodo("Learn Junit");
+        verify(todoService, times(1)).deleteTodo("Learn JUnit");
 
         // minimum 1 time it should get called
-        verify(todoService, atLeastOnce()).deleteTodo("Learn Junit");
+        verify(todoService, atLeastOnce()).deleteTodo("Learn JUnit");
 
         // Atleast 5 times
         verify(todoService, atLeast(5)).deleteTodo(anyString());
@@ -323,7 +355,17 @@ with which parameter and how many times
 ```
 
 ### Hamcrest Matcher
-This matcher help in increaasing the readability of test cases
+This matcher help in increasing the readability of test cases
+
+```java
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <version>2.2</version>
+            <scope>test</scope>
+        </dependency>
+
+```
 
 like :
 
@@ -367,7 +409,7 @@ public class TodoBusinessImplInjectMockTest {
 
     @Test
     public void testRetreiveTodosRelatedToSpring() {
-        List<String> strings = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn Junit");
+        List<String> strings = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn JUnit");
         when(todoService.retrieveTodos("Dummy")).thenReturn(strings);
         assertEquals(2, todoBusiness.retreiveTodosRelatedToSpring("Dummy").size());
     }
@@ -401,3 +443,28 @@ In 5th line we are mocking the size method of list.
 So using Spy we can combine both types.
 
 But its not recommended to use Spy, always try to use Mock. Spy was for the legacy code.
+
+
+#### Note : Mockito cannot mock final, static and private methods. For that we have power mock.
+
+#### Power Mock
+Power mock is used to mock static methods, private methods.
+Power mock is not compatible with JUnit5 So we will discuss it will JUnit4.
+
+pom.xml :
+
+```java
+<dependency>
+    <groupId>org.powermock</groupId>
+    <artifactId>powermock-api-mockito</artifactId>
+    <version>1.7.4</version>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>org.powermock</groupId>
+    <artifactId>powermock-module-junit4</artifactId>
+    <version>1.6.4</version>
+    <scope>test</scope>
+</dependency>
+```
+
