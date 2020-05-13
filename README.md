@@ -129,12 +129,12 @@ public void shouldAssertAllTheGroup() {
 ```
 
 #### PowerMocks
-The only current issue with JUnit5 is that as per today there is no a concrete support for Power mocks. Where as in JUnit4 Powermocks
+The only current issue with JUnit5 is that as per today there is no a concrete support for Power mocks. Where as in JUnit4 PowerMocks
 works perfectly.
 
 
 ### Parameterised tests.
-Thes tests are used when we have similar kind of multiple test cases with the only difference of 
+These tests are used when we have similar kind of multiple test cases with the only difference of 
 test inputs like
 ```java
     @Test
@@ -166,13 +166,11 @@ Stubs are the dummy implementation of our classes.
  TodoBusinessService
  TodoService
  
- and we are calling todoService in todoBusinessService. For writting test cases of 
+ and we are calling todoService in todoBusinessService. For writing test cases of 
  todoBusinessService. we can either mock the todoService or can use stub to give a 
  dummy implementation like :
  
  ```java
- TodoService
- 
  public interface TodoService {
      public List<String> retrieveTodos(String user);
  }
@@ -391,7 +389,7 @@ like :
     }
 ```
 
-### Mockito Annotation Based Testcases
+### Mockito Annotation Based Test cases
 In mockito annotation based test cases we mock mocks and inject mocks the classes.
 InjectMock the class for which we are writing test case and Mock the classes which 
 are used in main test class.
