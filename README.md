@@ -468,3 +468,155 @@ pom.xml :
 </dependency>
 ```
 
+##### Mocking static methods
+Using power mock we can easily mock static methods.
+
+We can return a mocked value if some static method is called or can verify that static method
+is called or not.
+
+example :
+
+```java
+public int methodCallingAStaticMethod() {
+        //privateMethodUnderTest calls static method SomeClass.staticMethod
+        List<Integer> stats = dependency.retrieveAllStats();
+        long sum = 0;
+        for (int stat : stats)
+            sum += stat;
+        return UtilityClass.staticMethod(sum);
+    }
+```
+
+for this method we will write test case. Here we are calling UtilityClass.staticMethod(sum) static method.
+
+So the test case will be
+
+```java
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(UtilityClass.class)
+class SystemUnderTest {
+    
+    @Mock
+    Dependency dependency;
+    
+    @InjectMocks
+    SystemUnderTest systemUnderTest;
+
+    @Test
+    public void test() {
+        List<Integer> stats = Arrays.asList(1,2,3);
+        when(dependency.retrieveAllStats()).thenReturn(stats);
+
+        PowerMockito.mockStatic(UtilityClass.class);
+        when(UtilityClass.staticMethod(6)).thenReturn(100);
+
+        int result = systemUnderTest.methodCallingAStaticMethod();
+
+        assertEquals(100,result);
+
+        PowerMockito.verifyStatic(UtilityClass.class);
+        UtilityClass.staticMethod(6);
+    }
+
+}
+```
+So we can divide this test case in 3 parts
+
+1st : We have to prepare the static class for the test case. Here are we doing it using @PrepareForTest() annotation
+
+2nd : Then we have to mock the static class using powerMockito. here we are doing in (line number 3) in test method.
+And can mock the return value from static method (line number 4)
+
+3rd : To verify that a static method is called or not we can first use verifyStatic() to specify the class and
+then we can write the method which we want to verify (line no 7 and 8).
+
+
+##### Invoking Private methods
+
+Private method can be tested using powerMock . But its not a good practice to test private test cases.
+
+private method :
+```java
+ private long privateMethodUnderTest() {
+        List<Integer> stats = dependency.retrieveAllStats();
+        long sum = 0;
+        for (int stat : stats)
+            sum += stat;
+        return sum;
+    }
+```
+
+We can test a private method using Whitebox
+
+```java
+@RunWith(PowerMockRunner.class)
+public class InvokingPrivateMethodTest {
+
+    @Mock
+    Dependency dependency;
+
+    @InjectMocks
+    SystemUnderTest systemUnderTest;
+
+    @Test   
+    public void test() throws Exception {
+        List<Integer> stats = Arrays.asList(1, 2, 3);
+        when(dependency.retrieveAllStats()).thenReturn(stats);
+
+        long result = Whitebox.invokeMethod(systemUnderTest, "privateMethodUnderTest");
+        assertEquals(6, result);
+    }
+}
+
+```
+
+In Whitebox invokeMethod we specify the class name as the first argument and method name as the
+second argument.
+
+##### Mocking a constructor
+
+Constructor testing can be done using powerMock in two steps
+
+First we need to prepare the class using @@PrepareForTest(), in this annotation we will pass the class which
+will call the constructor.
+
+Like if class A is calling ArrayList then here we will do @PrepareForTest(A.class)
+
+Second we will override the constructor
+
+method :
+
+```java
+    public int methodUsingAnArrayListConstructor() {
+        ArrayList list = new ArrayList();
+        return list.size();
+    }
+```
+
+mocking :
+```java
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(SystemUnderTest.class)
+public class InvokingConstructorMethodTest {
+
+    @InjectMocks
+    SystemUnderTest systemUnderTest;
+
+    @Mock
+    ArrayList mockList;
+
+    @Test
+    public void test() throws Exception {
+        when(mockList.size()).thenReturn(5);
+
+        PowerMockito.whenNew(ArrayList.class).withAnyArguments().thenReturn(mockList);
+
+        int size = systemUnderTest.methodUsingAnArrayListConstructor();
+        assertEquals(1, size);
+    }
+}
+```
+
+Note: PowerMock is not recommended in latest projects. Its not a good  coding practice.
+There is no need to test static methods, private methods. They get covered in public methods.
+
